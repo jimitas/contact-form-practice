@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\Admin\AuthController as AdminAuthController;
 use App\Http\Controllers\Admin\ContactController as AdminContactController;
+use App\Http\Controllers\Admin\ContactReplyController as AdminContactReplyController;
+use App\Http\Controllers\Admin\GoogleAuthController;
 use App\Http\Controllers\ContactController;
 use Illuminate\Support\Facades\Route;
 
@@ -14,11 +16,12 @@ Route::post('/contact/confirm', [ContactController::class, 'confirm'])->name('co
 Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
 Route::get('/contact/thanks', [ContactController::class, 'thanks'])->name('contact.thanks');
 
-// 管理ページ（お問い合わせの一覧・詳細・ステータス管理、およびログイン・ログアウト）
+// 管理ページ（お問い合わせの一覧・詳細・ステータス管理・返信、およびログイン・ログアウト）
 Route::prefix('admin')->name('admin.')->group(function () {
     Route::middleware('guest')->group(function () {
         Route::get('login', [AdminAuthController::class, 'create'])->name('login');
-        Route::post('login', [AdminAuthController::class, 'store'])->name('login.store');
+        Route::get('auth/google/redirect', [GoogleAuthController::class, 'redirect'])->name('auth.google.redirect');
+        Route::get('auth/google/callback', [GoogleAuthController::class, 'callback'])->name('auth.google.callback');
     });
 
     Route::middleware('auth')->group(function () {
@@ -26,5 +29,6 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('contacts', [AdminContactController::class, 'index'])->name('contacts.index');
         Route::get('contacts/{contact}', [AdminContactController::class, 'show'])->name('contacts.show');
         Route::patch('contacts/{contact}/status', [AdminContactController::class, 'updateStatus'])->name('contacts.updateStatus');
+        Route::post('contacts/{contact}/replies', [AdminContactReplyController::class, 'store'])->name('contacts.replies.store');
     });
 });

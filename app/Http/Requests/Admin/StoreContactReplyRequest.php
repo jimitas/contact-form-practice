@@ -3,13 +3,11 @@
 namespace App\Http\Requests\Admin;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Validation\ValidationException;
 
 /**
- * 管理ページのログイン認証を検証するリクエスト。
+ * お問い合わせへの返信内容を検証するリクエスト。
  */
-class LoginRequest extends FormRequest
+class StoreContactReplyRequest extends FormRequest
 {
     /**
      * このリクエストを実行する権限があるかどうかを判定する。
@@ -27,8 +25,7 @@ class LoginRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'email' => 'required|email',
-            'password' => 'required|string',
+            'body' => 'required|string|max:2000',
         ];
     }
 
@@ -40,8 +37,7 @@ class LoginRequest extends FormRequest
     public function attributes(): array
     {
         return [
-            'email' => 'メールアドレス',
-            'password' => 'パスワード',
+            'body' => '返信本文',
         ];
     }
 
@@ -54,19 +50,8 @@ class LoginRequest extends FormRequest
     {
         return [
             'required' => ':attributeを入力してください。',
-            'email' => ':attributeの形式が正しくありません。',
+            'string' => ':attributeは文字列で入力してください。',
+            'max' => ':attributeは:max文字以内で入力してください。',
         ];
-    }
-
-    /**
-     * 入力されたメールアドレスとパスワードで認証を試みる。
-     */
-    public function authenticate(): void
-    {
-        if (! Auth::attempt($this->only('email', 'password'))) {
-            throw ValidationException::withMessages([
-                'email' => 'メールアドレスまたはパスワードが正しくありません。',
-            ]);
-        }
     }
 }

@@ -5,27 +5,17 @@
 @section('content')
     <h1>管理ログイン</h1>
 
-    <form method="POST" action="{{ route('admin.login.store') }}">
-        @csrf
-
-        <div class="form-row">
-            <label for="email">メールアドレス</label>
-            <input type="email" id="email" name="email" value="{{ old('email') }}">
-            @error('email')
-                <div class="error">{{ $message }}</div>
-            @enderror
+    @if ($errors->any())
+        <div class="error">
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
         </div>
+    @endif
 
-        <div class="form-row">
-            <label for="password">パスワード</label>
-            <input type="password" id="password" name="password">
-            @error('password')
-                <div class="error">{{ $message }}</div>
-            @enderror
-        </div>
-
-        <div class="buttons">
-            <button type="submit">ログイン</button>
-        </div>
-    </form>
+    <div class="buttons">
+        <a class="button-link" href="{{ route('admin.auth.google.redirect') }}">Googleでログインする</a>
+    </div>
 @endsection

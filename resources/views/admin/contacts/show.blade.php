@@ -51,5 +51,37 @@
         </div>
     </form>
 
+    <h1>メールで返信</h1>
+
+    <form method="POST" action="{{ route('admin.contacts.replies.store', $contact) }}">
+        @csrf
+
+        <div class="form-row">
+            <label for="body">返信本文</label>
+            <textarea id="body" name="body" rows="8">{{ old('body') }}</textarea>
+            @error('body')
+                <div class="error">{{ $message }}</div>
+            @enderror
+        </div>
+
+        <div class="buttons">
+            <button type="submit">送信する</button>
+        </div>
+    </form>
+
+    <h1>送信履歴</h1>
+
+    @forelse ($contact->replies as $reply)
+        <dl class="review">
+            <dt>送信日時</dt>
+            <dd>{{ $reply->created_at->format('Y-m-d H:i') }}</dd>
+
+            <dt>本文</dt>
+            <dd>{{ $reply->body }}</dd>
+        </dl>
+    @empty
+        <p>まだ返信はありません。</p>
+    @endforelse
+
     <p><a href="{{ route('admin.contacts.index') }}">一覧に戻る</a></p>
 @endsection

@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ContactRequest;
+use App\Mail\NewContactNotificationMail;
 use App\Models\Contact;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\View\View;
 
 /**
@@ -49,12 +51,14 @@ class ContactController extends Controller
                 ->withErrors(['form' => '入力内容が見つかりませんでした。もう一度入力してください。']);
         }
 
-        Contact::create([
+        $contact = Contact::create([
             ...$input,
             'status' => Contact::STATUS_NEW,
         ]);
 
         session()->forget('contact.input');
+
+        $this->notifyAdmin($contact);
 
         return redirect()->route('contact.thanks');
     }
@@ -65,5 +69,23 @@ class ContactController extends Controller
     public function thanks(): View
     {
         return view('contact.thanks');
+    }
+
+    /**
+     * 新規お問い合わせを管理者へ通知する。通知の失敗で問い合わせ自体は失敗させない。
+     */
+    private function notifyAdmin(Contact $contact): void
+    {
+        $adminEmail = config('contact.admin_notification_email');
+
+        if (! $adminEmail) {
+            return;
+        }
+
+        try {
+            Mail::to($adminEmail)->send(new NewContactNotificationMail($contact));
+        } catch (\Throwable $e) {
+            report($e);
+        }
     }
 }

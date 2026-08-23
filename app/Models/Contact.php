@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * お問い合わせを表すモデル。
@@ -43,5 +44,13 @@ class Contact extends Model
             self::STATUS_IN_PROGRESS => self::STATUS_IN_PROGRESS,
             self::STATUS_RESOLVED => self::STATUS_RESOLVED,
         ];
+    }
+
+    /**
+     * このお問い合わせへの返信履歴。
+     */
+    public function replies(): HasMany
+    {
+        return $this->hasMany(ContactReply::class);
     }
 }
