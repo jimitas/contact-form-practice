@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\AuthController as AdminAuthController;
 use App\Http\Controllers\Admin\ContactController as AdminContactController;
 use App\Http\Controllers\ContactController;
 use Illuminate\Support\Facades\Route;
@@ -13,9 +14,17 @@ Route::post('/contact/confirm', [ContactController::class, 'confirm'])->name('co
 Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
 Route::get('/contact/thanks', [ContactController::class, 'thanks'])->name('contact.thanks');
 
-// 管理ページ（お問い合わせの一覧・詳細・ステータス管理）
+// 管理ページ（お問い合わせの一覧・詳細・ステータス管理、およびログイン・ログアウト）
 Route::prefix('admin')->name('admin.')->group(function () {
-    Route::get('contacts', [AdminContactController::class, 'index'])->name('contacts.index');
-    Route::get('contacts/{contact}', [AdminContactController::class, 'show'])->name('contacts.show');
-    Route::patch('contacts/{contact}/status', [AdminContactController::class, 'updateStatus'])->name('contacts.updateStatus');
+    Route::middleware('guest')->group(function () {
+        Route::get('login', [AdminAuthController::class, 'create'])->name('login');
+        Route::post('login', [AdminAuthController::class, 'store'])->name('login.store');
+    });
+
+    Route::middleware('auth')->group(function () {
+        Route::post('logout', [AdminAuthController::class, 'destroy'])->name('logout');
+        Route::get('contacts', [AdminContactController::class, 'index'])->name('contacts.index');
+        Route::get('contacts/{contact}', [AdminContactController::class, 'show'])->name('contacts.show');
+        Route::patch('contacts/{contact}/status', [AdminContactController::class, 'updateStatus'])->name('contacts.updateStatus');
+    });
 });
