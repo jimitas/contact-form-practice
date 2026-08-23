@@ -82,5 +82,5 @@
         </tbody>
     </table>
 
-    {{ $contacts->links() }}
+    {{ $contacts->links('pagination::bootstrap-4') }}
 @endsection

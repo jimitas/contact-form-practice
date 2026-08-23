@@ -89,4 +89,29 @@
         color: #0563c1;
         text-decoration: underline;
     }
+    .pagination {
+        display: flex;
+        flex-wrap: wrap;
+        list-style: none;
+        margin: 16px 0;
+        padding: 0;
+        gap: 4px;
+    }
+    .page-item .page-link {
+        display: inline-block;
+        padding: 6px 12px;
+        border: 1px solid #ddd;
+        color: #0563c1;
+        text-decoration: none;
+        font-size: 0.9rem;
+    }
+    .page-item.active .page-link {
+        background: #f5f5f5;
+        color: #222;
+        font-weight: bold;
+    }
+    .page-item.disabled .page-link {
+        color: #999;
+        cursor: default;
+    }
 </style>
