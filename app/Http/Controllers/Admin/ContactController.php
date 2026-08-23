@@ -38,7 +38,8 @@ class ContactController extends Controller
      */
     public function show(Contact $contact): View
     {
-        $contact->load(['replies' => fn ($query) => $query->latest()]);
+        // created_atが同秒になるケースでも順序が不定にならないよう、idを第二キーにする
+        $contact->load(['replies' => fn ($query) => $query->orderByDesc('created_at')->orderByDesc('id')]);
 
         return view('admin.contacts.show', ['contact' => $contact]);
     }
