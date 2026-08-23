@@ -21,5 +21,7 @@ class DatabaseSeeder extends Seeder
             'name' => '管理者',
             'email' => 'jimitas629@gmail.com',
         ]);
+
+        $this->call(ContactSeeder::class);
     }
 }
