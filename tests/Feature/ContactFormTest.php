@@ -21,7 +21,7 @@ use Tests\TestCase;
  * 実際のメール受信確認（Mail::fake()でのアサーションに留める）、
  * ページネーションの見た目のサイズなど視覚的な確認。
  */
-class ContactFormTests extends TestCase
+class ContactFormTest extends TestCase
 {
     use RefreshDatabase;
 
